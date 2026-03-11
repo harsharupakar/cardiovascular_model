@@ -23,7 +23,7 @@ from calibration import calibrate_model, evaluate_calibration, plot_calibration_
 from evaluate import run_metrics, run_shap_analysis
 from shap_stability import analyze_shap_stability
 from fairness_audit import run_fairness_audit
-from src.ctgan_augment import augment_fold # Fix if path is different, but here it's fine
+from ctgan_augment import augment_fold # Fix if path is different, but here it's fine
 
 set_seeds()
 device = "cuda" if torch.cuda.is_available() else "cpu"
