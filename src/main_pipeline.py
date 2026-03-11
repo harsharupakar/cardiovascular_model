@@ -36,7 +36,7 @@ def main():
     # ── 1. Load Data & Params ──
     raw_path = os.path.join(DATA_DIR, "raw_dataset.csv")
     df = pd.read_csv(raw_path)
-    X, y, feature_names, _ = preprocess(df, fit=True)
+    X, y, preprocessor_obj, feature_names = preprocess(df, fit=True)
     
     params_path = os.path.join(MODELS_DIR, "best_hpo_params.joblib")
     if os.path.exists(params_path):
@@ -62,8 +62,8 @@ def main():
     
     # Augment Training Set
     aug_train_df = augment_fold(train_df, n_synthetic=300, fold_idx=0)
-    X_train, y_train, _, _ = preprocess(aug_train_df, fit=False) # Reuse preprocessor is safer later, but here it's fresh
-    X_test,  y_test, _, _  = preprocess(test_df, fit=False)
+    X_train, y_train, _, _ = preprocess(aug_train_df, fit=False, preprocessor=preprocessor_obj) 
+    X_test,  y_test, _, _  = preprocess(test_df, fit=False, preprocessor=preprocessor_obj)
     
     # Final MLP
     model = CVDClassifier(X_train.shape[1], hidden_size=params['hidden_size'], dropout=params['dropout']).to(device)

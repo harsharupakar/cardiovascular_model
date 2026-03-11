@@ -64,9 +64,9 @@ def check_fidelity(real_df: pd.DataFrame, synthetic_df: pd.DataFrame, fold_idx: 
         score = report.get_score()
         print(f"  Fold {fold_idx} SDV Quality Score: {score:.4f}", end="")
         if score >= SDV_QUALITY_THRESHOLD:
-            print(" ✅ PASSED")
+            print(" [PASSED]")
         else:
-            print(f" ❌ BELOW THRESHOLD ({SDV_QUALITY_THRESHOLD})")
+            print(f" [FAILED] (THRESHOLD: {SDV_QUALITY_THRESHOLD})")
         return score
     except Exception as e:
         print(f"  Fold {fold_idx} SDV check error: {e}")
