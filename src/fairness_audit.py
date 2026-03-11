@@ -44,7 +44,7 @@ def run_fairness_audit(y_true, y_pred, df_subgroups, out_dir=OUTPUTS_DIR):
     # ── 2. Audit by Age Bucket ──
     # Create age buckets if not present
     if 'age_bucket' not in df_subgroups.columns and 'age' in df_subgroups.columns:
-        df_subgroups['age_bucket'] = pd.cut(df_subgroups['age'], bins=[18, 23, 29, 36], labels=['18-22', 23-28, '29-35'])
+        df_subgroups['age_bucket'] = pd.cut(df_subgroups['age'], bins=[18, 23, 29, 36], labels=['18-22', '23-28', '29-35'])
     
     mf_age = MetricFrame(
         metrics=metrics,
