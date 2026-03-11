@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Data & Models (ignore large files)
+data/*.csv
+data/*.xlsx
+models/*.pt
+models/*.pkl
+models/*.joblib
+outputs/*.png
+outputs/*.csv
+outputs/*.html
+experiments/
+mlruns/
+.ipynb_checkpoints/
+
+# Virtual Environment
+venv/
+ENV/
+
+# OS
+.DS_Store
+Thumbs.db
