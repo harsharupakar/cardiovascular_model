@@ -30,7 +30,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 def main():
     print("\n" + "="*50)
-    print("🚀 STARTING FINAL ELITE CVD PIPELINE")
+    print("STARTING FINAL ELITE CVD PIPELINE")
     print("="*50)
 
     # ── 1. Load Data & Params ──
@@ -117,7 +117,7 @@ def main():
     run_fairness_audit(y_test, (probs >= 0.5).astype(int), test_df)
 
     print("\n" + "="*50)
-    print("✅ ELITE PIPELINE COMPLETE. READY FOR DASHBOARD.")
+    print("ELITE PIPELINE COMPLETE. READY FOR DASHBOARD.")
     print("="*50)
 
 if __name__ == "__main__":
