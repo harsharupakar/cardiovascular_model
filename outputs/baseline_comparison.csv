@@ -1,0 +1,5 @@
+Model,ROC_AUC,Recall_High_Risk,F1,Precision,AUC_std
+Logistic_Regression,0.9531,0.8936,0.8432,0.8006,0.0137
+Random_Forest,0.9996,0.9756,0.9808,0.9863,0.0005
+XGBoost,1.0,0.9973,0.9986,1.0,0.0
+LightGBM,1.0,0.9973,0.9986,1.0,0.0
