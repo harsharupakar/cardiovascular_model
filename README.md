@@ -36,3 +36,71 @@ Run rigorous pipeline assertions locally utilizing `pytest`:
 python -m pytest tests/
 ```
 Tests ensure that the pregnancy gating remains logically sound, CTGAN fallback functions correctly on minority classes, PyTorch gradients flow through logits correctly without early sigmoid activations, and FastAPI pydantic schemas hold correctly.
+
+## Quickstart (Clone to Run)
+
+### 1) Clone
+```bash
+git clone https://github.com/harsharupakar/cardiovascular_model.git
+cd cardiovascular_model
+```
+
+### 2) Create and Activate Virtual Environment
+
+Windows (PowerShell):
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+macOS/Linux:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3) Install Dependencies
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4) (Optional) Set Gemini API Key for LLM Extraction
+If not set, the app still runs with regex/default extraction paths.
+
+Windows (PowerShell):
+```powershell
+$env:GOOGLE_API_KEY="YOUR_KEY_HERE"
+```
+
+macOS/Linux:
+```bash
+export GOOGLE_API_KEY="YOUR_KEY_HERE"
+```
+
+### 5) Run Services
+
+Backend API:
+```bash
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Frontend (separate terminal):
+```bash
+cd frontend
+python -m http.server 8080
+```
+
+Optional Streamlit Dashboard (separate terminal from repo root):
+```bash
+python -m streamlit run dashboard/streamlit_app.py --server.port 8501
+```
+
+### 6) Verify
+- API health: http://127.0.0.1:8000/health
+- Frontend: http://127.0.0.1:8080
+- Streamlit: http://127.0.0.1:8501
+
+### Notes
+- If port 8000/8080/8501 is already in use, stop the occupying process or change ports.
+- First-time installation may take a while due to heavy ML dependencies.
