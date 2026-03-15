@@ -47,18 +47,17 @@ for _d in [DATA_DIR, MODELS_DIR, OUTPUTS_DIR]:
 
 # ─── Feature Groups ──────────────────────────────────────────────────────────
 CONTINUOUS_FEATURES = [
-    "age", "bmi", "systolic_bp", "diastolic_bp",
-    "glucose", "cholesterol_total", "sleep_hours",
+    "age", "BMI", "blood_pressure", "glucose", "activity",
+    "cholesterol", "sleep_duration", "alcohol"
 ]
-ORDINAL_FEATURES = ["education", "socioeconomic_status", "physical_activity", "diet_quality"]
-BINARY_FEATURES  = ["smoking", "alcohol_use", "pcos", "family_history_cvd", "is_ever_pregnant"]
+ORDINAL_FEATURES = ["education", "socioeconomic_status", "diet_pattern", "stress_level"]
+BINARY_FEATURES  = ["smoking", "PCOS", "hypertension", "is_ever_pregnant"]
 PREGNANCY_FEATURES = ["gestational_diabetes", "preeclampsia", "preterm_birth"]
 
 ALL_BASE_FEATURES = CONTINUOUS_FEATURES + ORDINAL_FEATURES + BINARY_FEATURES + PREGNANCY_FEATURES
 
 INTERACTION_FEATURES = [
-    "bmi_bp", "glucose_bmi", "pcos_bmi",
-    "age_activity", "metabolic_index", "lifestyle_score",
+    "BMI_x_BP", "Glucose_x_BMI", "PCOS_x_BMI", "Age_x_PhysicalActivity"
 ]
 
 TARGET_COL = "cvd_risk"

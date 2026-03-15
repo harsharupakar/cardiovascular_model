@@ -36,17 +36,10 @@ def apply_pregnancy_gate(df: pd.DataFrame) -> pd.DataFrame:
 # ─── Interaction / Engineered Features ──────────────────────────────────────
 def add_interaction_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    df["bmi_bp"]          = df["bmi"] * df["systolic_bp"]
-    df["glucose_bmi"]     = df["glucose"] * df["bmi"]
-    df["pcos_bmi"]        = df["pcos"] * df["bmi"]
-    df["age_activity"]    = df["age"] * df["physical_activity"]
-    df["metabolic_index"] = df["bmi"] * df["glucose"]
-    df["lifestyle_score"] = (
-        df["smoking"].astype(int) +
-        df["alcohol_use"].astype(int) +
-        (df["physical_activity"] == 0).astype(int) +
-        (df["sleep_hours"] < 6).astype(int)
-    )
+    df["BMI_x_BP"]               = df["BMI"] * df["blood_pressure"]
+    df["Glucose_x_BMI"]          = df["glucose"] * df["BMI"]
+    df["PCOS_x_BMI"]             = df["PCOS"] * df["BMI"]
+    df["Age_x_PhysicalActivity"] = df["age"] * df["activity"]
     return df
 
 # ─── Correlation Heatmap ─────────────────────────────────────────────────────
@@ -72,7 +65,7 @@ def preprocess(df: pd.DataFrame, fit: bool = True, preprocessor=None):
     df = apply_pregnancy_gate(df)
     df = add_interaction_features(df)
 
-    interaction_feats = ["bmi_bp","glucose_bmi","pcos_bmi","age_activity","metabolic_index","lifestyle_score"]
+    interaction_feats = ["BMI_x_BP", "Glucose_x_BMI", "PCOS_x_BMI", "Age_x_PhysicalActivity"]
     all_binary        = BINARY_FEATURES + ["gestational_diabetes","preeclampsia","preterm_birth"]
 
     feature_cols = CONTINUOUS_FEATURES + interaction_feats + ORDINAL_FEATURES + all_binary

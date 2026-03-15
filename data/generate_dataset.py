@@ -22,37 +22,39 @@ def generate():
 
     # ── Continuous ────────────────────────────────────────────────────────────
     df["age"]               = truncated_normal(26.5, 5.0, 18, 35, N).round(1)
-    df["bmi"]               = truncated_normal(26.5, 5.5, 16, 50, N).round(1)
+    df["BMI"]               = truncated_normal(26.5, 5.5, 16, 50, N).round(1)
 
-    # Blood pressure correlated with BMI (r ≈ 0.35)
-    noise_sbp = truncated_normal(0, 1, -3, 3, N)
-    df["systolic_bp"]       = (118 + 14 * (0.35 * (df["bmi"] - 26.5) / 5.5 + 0.94 * noise_sbp)).clip(90, 180).round(1)
+    # Blood pressure correlated with BMI
+    noise_bp = truncated_normal(0, 1, -3, 3, N)
+    df["blood_pressure"]    = (118 + 14 * (0.35 * (df["BMI"] - 26.5) / 5.5 + 0.94 * noise_bp)).clip(90, 180).round(1)
 
-    noise_dbp = truncated_normal(0, 1, -3, 3, N)
-    df["diastolic_bp"]      = (76 + 10 * (0.25 * (df["bmi"] - 26.5) / 5.5 + 0.97 * noise_dbp)).clip(60, 120).round(1)
-
-    # Glucose correlated with BMI (r ≈ 0.30)
+    # Glucose correlated with BMI
     noise_gluc = truncated_normal(0, 1, -3, 3, N)
-    df["glucose"]           = (95 + 18 * (0.30 * (df["bmi"] - 26.5) / 5.5 + 0.95 * noise_gluc)).clip(70, 200).round(1)
+    df["glucose"]           = (95 + 18 * (0.30 * (df["BMI"] - 26.5) / 5.5 + 0.95 * noise_gluc)).clip(70, 200).round(1)
 
-    df["cholesterol_total"] = truncated_normal(185, 35, 120, 320, N).round(1)
+    # Activity as continuous (e.g., hours per week)
+    df["activity"]          = truncated_normal(3.0, 2.0, 0, 14, N).round(1)
 
-    # Sleep inversely related to poor lifestyle
-    noise_sleep = np.random.normal(0, 1, N)
-    df["sleep_hours"]       = (7.0 + 1.3 * noise_sleep).clip(4, 10).round(1)
+    # Cholesterol (mg/dL) — correlated with BMI
+    noise_chol = truncated_normal(0, 1, -3, 3, N)
+    df["cholesterol"]       = (175 + 20 * (0.25 * (df["BMI"] - 26.5) / 5.5 + 0.97 * noise_chol)).clip(100, 320).round(1)
 
-    # ── Ordinal ───────────────────────────────────────────────────────────────
+    # Sleep duration (hours/night)
+    df["sleep_duration"]    = truncated_normal(6.8, 1.2, 4, 10, N).round(1)
+
+    # Alcohol (drinks per week)
+    df["alcohol"]           = truncated_normal(2.5, 3.0, 0, 20, N).round(1)
     df["education"]           = np.random.choice([0,1,2,3], N, p=[0.05, 0.20, 0.45, 0.30])
     df["socioeconomic_status"]= np.random.choice([0,1,2],   N, p=[0.25, 0.50, 0.25])
-    df["physical_activity"]   = np.random.choice([0,1,2,3], N, p=[0.40, 0.25, 0.20, 0.15])
-    df["diet_quality"]        = np.random.choice([0,1,2],   N, p=[0.35, 0.40, 0.25])
+    # diet_pattern: 0=poor, 1=moderate, 2=good
+    df["diet_pattern"]        = np.random.choice([0,1,2],   N, p=[0.30, 0.45, 0.25])
+    # stress_level: 0=low, 1=moderate, 2=high  (psychosocial risk)
+    df["stress_level"]        = np.random.choice([0,1,2],   N, p=[0.25, 0.45, 0.30])
 
     # ── Binary ────────────────────────────────────────────────────────────────
     df["smoking"]             = np.random.binomial(1, 0.12, N)
-    # Alcohol slightly correlated with smoking
-    df["alcohol_use"]         = (np.random.binomial(1, 0.35, N) | (df["smoking"] & np.random.binomial(1, 0.20, N))).clip(0, 1)
-    df["pcos"]                = np.random.binomial(1, 0.10, N)
-    df["family_history_cvd"]  = np.random.binomial(1, 0.18, N)
+    df["PCOS"]                = np.random.binomial(1, 0.10, N)
+    df["hypertension"]        = (df["blood_pressure"] >= 140).astype(int)
 
     # ── Pregnancy-gated ───────────────────────────────────────────────────────
     df["is_ever_pregnant"]        = np.random.binomial(1, 0.45, N)
@@ -62,16 +64,22 @@ def generate():
 
     # ── Risk Label ────────────────────────────────────────────────────────────
     high_risk = (
-        (df["bmi"] >= 30) |
-        (df["systolic_bp"] >= 140) |
+        (df["BMI"] >= 30) |
+        (df["blood_pressure"] >= 140) |
         (df["glucose"] >= 126) |
-        ((df["pcos"] == 1) & (df["bmi"] >= 28)) |
+        (df["cholesterol"] >= 240) |
+        ((df["PCOS"] == 1) & (df["BMI"] >= 28)) |
         (df["preeclampsia"] == 1)
     )
     moderate_risk = (
         ~high_risk &
-        (df["bmi"] >= 25) &
-        (df["smoking"] + df["alcohol_use"] + (df["physical_activity"] == 0).astype(int) + (df["sleep_hours"] < 6).astype(int) >= 2)
+        (
+            (df["BMI"] >= 25) |
+            (df["smoking"] == 1) |
+            (df["stress_level"] == 2) |
+            (df["sleep_duration"] < 5) |
+            (df["alcohol"] >= 14)
+        )
     )
     df["cvd_risk"] = 0  # Low by default
     df.loc[moderate_risk, "cvd_risk"] = 1

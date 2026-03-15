@@ -1,0 +1,17 @@
+Column,Metric,Score
+age,KSComplement,0.7705841924398625
+BMI,KSComplement,0.7556357388316151
+blood_pressure,KSComplement,0.7424742268041238
+glucose,KSComplement,0.71893470790378
+activity,KSComplement,0.6270103092783506
+education,KSComplement,0.7443642611683849
+socioeconomic_status,KSComplement,0.7250859106529209
+smoking,TVComplement,0.8694158075601375
+PCOS,TVComplement,0.8694158075601375
+hypertension,TVComplement,0.8213058419243986
+is_ever_pregnant,TVComplement,0.9794158075601375
+gestational_diabetes,TVComplement,0.9587628865979382
+preeclampsia,TVComplement,0.8969072164948454
+preterm_birth,TVComplement,0.9553264604810997
+cvd_risk,TVComplement,1.0
+cvd_risk_binary,TVComplement,1.0

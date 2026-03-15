@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVD Risk Prediction Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+    <div class="glass-bg"></div>
+
+    <main class="container">
+        <header class="header">
+            <h1>Cardiovascular Risk Assessment</h1>
+            <p class="subtitle">AI-Powered Diagnostic Screening calibrated for women aged 18-35.</p>
+            <div id="api-status" class="api-status loading">Connecting to Network Model...</div>
+        </header>
+
+        <div class="dashboard">
+            <section class="card input-section">
+                <h2>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    Patient Vitals & History
+                </h2>
+                <form id="prediction-form" class="form-grid">
+                    
+                    <div class="input-group full-width">
+                        <label>Pregnancy History (Biological Screen)</label>
+                        <select id="is_ever_pregnant">
+                            <option value="0">Never Pregnant (Nulligravida)</option>
+                            <option value="1" selected>Previously Pregnant</option>
+                        </select>
+                    </div>
+
+                    <div id="pregnancy-complications" class="hidden full-width input-group form-subgrid">
+                        <div class="input-group">
+                            <label>Gestational Diabetes</label>
+                            <select id="gestational_diabetes">
+                                <option value="0">Negative</option>
+                                <option value="1">Positive</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Preeclampsia History</label>
+                            <select id="preeclampsia">
+                                <option value="0">Negative</option>
+                                <option value="1">Positive</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Preterm Birth</label>
+                            <select id="preterm_birth">
+                                <option value="0">Negative</option>
+                                <option value="1">Positive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" min="18" max="35" step="0.1" placeholder="e.g. 28.5 years">
+                    </div>
+                    <div class="input-group">
+                        <label for="BMI">BMI Index</label>
+                        <input type="number" id="BMI" min="15" max="50" step="0.1" placeholder="e.g. 24.5 kg/m²">
+                    </div>
+                    <div class="input-group">
+                        <label for="blood_pressure">Systolic BP</label>
+                        <input type="number" id="blood_pressure" min="80" max="200" placeholder="e.g. 120 mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="glucose">Glucose Level</label>
+                        <input type="number" id="glucose" min="50" max="300" placeholder="e.g. 95 mg/dL">
+                    </div>
+                    <div class="input-group full-width">
+                        <label for="activity">Physical Activity Frequency</label>
+                        <input type="number" id="activity" min="0" max="7" step="0.5" placeholder="e.g. 3 Days/Wk">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="cholesterol">Total Cholesterol</label>
+                        <input type="number" id="cholesterol" min="100" max="320" step="1" value="180" placeholder="e.g. 190 mg/dL">
+                    </div>
+                    <div class="input-group">
+                        <label for="sleep_duration">Sleep Duration</label>
+                        <input type="number" id="sleep_duration" min="3" max="12" step="0.5" value="7" placeholder="e.g. 7 hrs/night">
+                    </div>
+                    <div class="input-group">
+                        <label for="alcohol">Alcohol Consumption</label>
+                        <input type="number" id="alcohol" min="0" max="30" step="0.5" value="0" placeholder="e.g. 3 drinks/week">
+                    </div>
+                    <div class="input-group">
+                        <label>Diet Pattern</label>
+                        <select id="diet_pattern">
+                            <option value="0">Poor (Fast food, high salt/sugar)</option>
+                            <option value="1" selected>Moderate (Mixed)</option>
+                            <option value="2">Good (Balanced, low processed)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Stress Level</label>
+                        <select id="stress_level">
+                            <option value="0">Low</option>
+                            <option value="1" selected>Moderate</option>
+                            <option value="2">High (Chronic stress/anxiety)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>PCOS Diagnosis</label>
+                        <select id="PCOS">
+                            <option value="0">Negative</option>
+                            <option value="1">Positive</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Hypertension</label>
+                        <select id="hypertension">
+                            <option value="0">Negative</option>
+                            <option value="1">Positive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group full-width">
+                        <label>Smoking Status</label>
+                        <select id="smoking">
+                            <option value="0">Non-Smoker</option>
+                            <option value="1">Smoker</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Education Bracket</label>
+                        <select id="education">
+                            <option value="1">High School/GED</option>
+                            <option value="2">Bachelors Degree</option>
+                            <option value="3">Advanced Degree</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Socioeconomic Tier</label>
+                        <select id="socioeconomic_status">
+                            <option value="1">Lower Income</option>
+                            <option value="2">Middle Income</option>
+                            <option value="3">High Income</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group full-width upload-group">
+                        <label for="echo_report">Echocardiography Report (PDF)</label>
+                        <div class="file-upload-wrap">
+                            <input type="file" id="echo_report" class="file-input-hidden" accept="application/pdf" required>
+                            <button type="button" id="choose-file-btn" class="file-choose-btn" aria-label="Upload PDF report">
+                                <span class="file-btn-icon">📄</span>
+                                <span>Upload PDF</span>
+                            </button>
+                            <span id="file-name" class="file-name">No file chosen</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn full-width" id="analyze-btn">
+                        <span>Execute Diagnostic Model</span>
+                        <div class="loader hidden" id="btn-loader"></div>
+                    </button>
+                    <p class="disclaimer full-width">Powered by PyTorch with BCEWithLogits optimization. SHAP kernel integration actively calibrating.</p>
+                </form>
+            </section>
+
+            <section class="card results-section">
+                <h2>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    Diagnostic Results
+                </h2>
+                
+                <div id="results-placeholder" class="placeholder-state">
+                    <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="placeholder-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    <p>Enter biological vectors and execute the model to populate SHAP-explainable predictions.</p>
+                </div>
+
+                <div id="results-content" class="hidden">
+                    <div class="risk-gauge">
+                        <div class="risk-label">A.I. Predictive Assessment</div>
+                        <h3 id="res-risk-level" class="risk-level-high">High Risk</h3>
+                        
+                        <div class="progress-bar-container">
+                            <div id="res-probability-bar" class="progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="risk-metrics">
+                            <span class="prob-text">Calculated Probability: <strong id="res-probability">0%</strong></span>
+                            <span class="conf-text" id="res-confidence">CI ±0.0%</span>
+                        </div>
+                    </div>
+
+                    <div class="shap-factors">
+                        <h4>Top AI Driving Factors</h4>
+                        <p class="shap-desc">Localized SHAP feature bounds indicating what specifically drove the neural network computation for this patient.</p>
+                        <ul id="res-shap-list" class="shap-list">
+                        </ul>
+                    </div>
+
+                    <div class="shap-factors" style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                        <h4>Agentic Echo Analysis</h4>
+                        <p class="shap-desc">Metrics extracted by LLM and specific structural disease probabilities.</p>
+                        <div style="display: flex; gap: 20px;">
+                            <div style="flex: 1;">
+                                <h5 style="margin-bottom: 5px; font-size: 0.9rem; color: #aaa;">Extracted Metrics</h5>
+                                <ul id="res-echo-metrics" class="shap-list"></ul>
+                            </div>
+                            <div style="flex: 1;">
+                                <h5 style="margin-bottom: 5px; font-size: 0.9rem; color: #aaa;">Disease Risks</h5>
+                                <ul id="res-echo-risks" class="shap-list"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shap-factors" style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+                        <h4>Risk Fusion Breakdown</h4>
+                        <p class="shap-desc">Shows how tabular lifestyle risk and echo structural risk were combined for the final decision.</p>
+                        <ul id="res-fusion-breakdown" class="shap-list"></ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/static/script.js?v=7"></script>
+</body>
+</html>

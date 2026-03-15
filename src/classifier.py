@@ -109,6 +109,7 @@ def run_training(X, y, params, use_ctgan=True, n_folds=5, epochs=100, device="cp
         
         best_auc = 0
         best_state = None
+        patience_counter = 0
         
         for epoch in range(epochs):
             loss = train_one_epoch(model, train_loader, criterion, optimizer, device)
@@ -118,7 +119,14 @@ def run_training(X, y, params, use_ctgan=True, n_folds=5, epochs=100, device="cp
             
             if auc > best_auc:
                 best_auc = auc
-                best_state = model.state_dict()
+                best_state = model.state_dict().copy()
+                patience_counter = 0
+            else:
+                patience_counter += 1
+                
+            if patience_counter >= 10:
+                print(f"  Early stopping at epoch {epoch}")
+                break
         
         print(f"  Best Fold AUC: {best_auc:.4f}")
         fold_results.append(best_auc)

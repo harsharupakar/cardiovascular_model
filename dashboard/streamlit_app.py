@@ -56,11 +56,12 @@ with st.sidebar:
 
 # ── Prediction Logic ────────────────────────────────────────────────────────
 payload = {
-    "age": age, "bmi": bmi, "systolic_bp": sbp, "diastolic_bp": dbp,
-    "glucose": glucose, "cholesterol_total": chol, "sleep_hours": sleep,
-    "education": edu, "socioeconomic_status": ses, "physical_activity": act, "diet_quality": diet,
-    "smoking": int(smoke), "alcohol_use": int(alco), "pcos": int(pcos), "family_history_cvd": int(fam),
-    "is_ever_pregnant": int(preg), "gestational_diabetes": int(gdm), "preeclampsia": int(pre), "preterm_birth": int(ptb)
+    "age": age, "BMI": bmi, "blood_pressure": sbp,
+    "glucose": glucose, "activity": act,
+    "education": edu, "socioeconomic_status": ses, 
+    "smoking": int(smoke), "PCOS": int(pcos), "hypertension": int(dbp > 90),
+    "is_ever_pregnant": int(preg), "gestational_diabetes": int(gdm), 
+    "preeclampsia": int(pre), "preterm_birth": int(ptb)
 }
 
 col1, col2 = st.columns([1, 1])

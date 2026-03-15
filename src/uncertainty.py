@@ -6,12 +6,17 @@ confidence intervals.
 import torch
 import numpy as np
 
-def mc_dropout_predict(model, X_tensor, n_passes=50, device="cpu"):
+def mc_dropout_predict(model, X_tensor, n_passes=50, device="cpu", temperature=1.5):
     """
     Performs n_passes forward passes through the model with dropout active.
     Returns mean probability and standard deviation (uncertainty).
+    Applies temperature scaling to calibrate extreme probabilities.
     """
-    model.train() # Enable dropout during inference
+    model.eval() # Keep BatchNorm in eval mode
+    for m in model.modules():
+        if m.__class__.__name__.startswith('Dropout'):
+            m.train() # Enable only dropout during inference
+
     probs_list = []
     
     X_tensor = X_tensor.to(device)
@@ -19,7 +24,7 @@ def mc_dropout_predict(model, X_tensor, n_passes=50, device="cpu"):
     with torch.no_grad():
         for _ in range(n_passes):
             logits = model(X_tensor)
-            probs = torch.sigmoid(logits).cpu().numpy()
+            probs = torch.sigmoid(logits / temperature).cpu().numpy()
             probs_list.append(probs)
             
     probs_list = np.array(probs_list) # (n_passes, batch_size, 1)
